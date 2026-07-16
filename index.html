@@ -1,18 +1,85 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="A simple, reliable calculator for everyday use." />
-    <meta name="robots" content="noindex, nofollow" />
-    <meta http-equiv="refresh" content="0; url=https://everyday-calculator-tool.aka-ak.chatgpt.site" />
-    <title>Calculator</title>
-    <style>
-      html, body { height: 100%; }
-      body { margin: 0; display: grid; place-items: center; background: #111416; color: #aab8a7; font-family: ui-monospace, monospace; }
-      output { width: 150px; padding: 15px 18px; border: 6px solid #292e31; border-radius: 8px; background: #aab8a7; color: #1c2c27; text-align: right; font-size: 36px; }
-    </style>
-    <script>window.location.replace("https://everyday-calculator-tool.aka-ak.chatgpt.site");</script>
-  </head>
-  <body><output aria-label="Loading calculator">0</output></body>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="A simple, reliable calculator for everyday use." />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Calculator</title>
+  <style>
+    :root{--ink:#46383c;--muted:#907c80;--rose:#bb6d79;--rose-dark:#92505d;--paper:#fffdf9;--line:#eadfda}
+    *{box-sizing:border-box}html,body{min-height:100%;margin:0}body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#f7f1e9;color:var(--ink)}button,input,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+    .calc-shell{min-height:100svh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% -10%,rgba(255,255,255,.08),transparent 38rem),linear-gradient(145deg,#1d2023,#0d0f11 62%,#191c1e)}
+    .calculator{width:min(100%,390px);padding:28px 25px 20px;color:#ecf0f2;background:linear-gradient(152deg,#33383c,#202427 55%,#171a1c);border:1px solid #464c50;border-radius:27px 27px 34px 34px;box-shadow:0 35px 80px rgba(0,0,0,.48),0 4px 0 #0c0e0f,inset 0 1px 0 rgba(255,255,255,.11)}
+    .calc-head{display:flex;align-items:center;justify-content:space-between;padding:0 4px 18px}.brand{margin:0 0 2px;font-size:10px;font-weight:700;letter-spacing:.22em}.model{margin:0;color:#929a9e;font-size:10px;letter-spacing:.16em}.solar{display:grid;grid-template-columns:repeat(4,1fr);width:104px;height:30px;padding:3px;gap:2px;background:#0a0d0e;border:1px solid #4b4b45;border-radius:5px}.solar i{background:linear-gradient(135deg,#342c25,#171a17);border-right:1px solid #65564a}
+    .screen{min-height:105px;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;margin-bottom:20px;padding:13px 16px 10px;color:#1c2c27;background:#aab8a7;border:7px solid #111517;border-radius:9px;box-shadow:inset 0 2px 10px rgba(30,44,36,.35)}.screen small{min-height:17px;font:10px ui-monospace,monospace;opacity:.68}.screen output{max-width:100%;overflow:hidden;font:clamp(36px,11vw,48px)/1 ui-monospace,monospace;letter-spacing:-.07em;white-space:nowrap}
+    .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.key{aspect-ratio:1.14/1;padding:0;color:#f1f3f4;background:linear-gradient(#4c5256,#34393c);border:1px solid #111416;border-radius:10px;font-size:20px;box-shadow:0 3px 0 #101214,inset 0 1px 0 rgba(255,255,255,.16)}.key:active{transform:translateY(2px);box-shadow:0 1px 0 #101214}.fn{color:#1e2528;background:linear-gradient(#d6d9da,#aab0b2);font-size:15px;font-weight:700}.op{background:linear-gradient(#e2a33a,#c47711);font-size:25px}.zero{grid-column:span 2;aspect-ratio:auto;text-align:left;padding-left:28px}.calc-foot{display:flex;justify-content:space-between;padding:17px 4px 0;color:#7f888c;font-size:8px;letter-spacing:.14em}.calc-foot button{border:0;background:none;color:#8d969a;font-size:8px}
+    .room{width:min(100%,980px);min-height:100svh;margin:auto;padding:38px 24px 52px;display:grid;grid-template-rows:auto minmax(360px,1fr) auto;background:radial-gradient(circle at 12% 18%,rgba(190,111,126,.08),transparent 29rem),#f7f1e9}.room-head{display:flex;align-items:center;justify-content:space-between;padding:0 6px 22px;border-bottom:1px solid var(--line)}.eyebrow{margin:0 0 7px;color:var(--rose);font-size:11px;font-weight:700;letter-spacing:.2em}.room h1{margin:0;font-family:serif;font-size:clamp(23px,4vw,31px)}.lock{padding:8px 13px;border:1px solid var(--line);border-radius:99px;background:var(--paper);color:#7c686c;font-size:12px}
+    .board{padding:25px 6px 14px;overflow:hidden}.divider{display:flex;align-items:center;gap:14px;margin-bottom:24px;color:#ab9997;font-size:11px}.divider:before,.divider:after{content:"";flex:1;height:1px;background:var(--line)}.messages{max-height:min(52svh,590px);overflow-y:auto;padding:0 8px 22px}.empty{min-height:300px;display:grid;place-content:center;text-align:center;color:var(--muted)}.empty b{font-family:serif;font-size:20px}.msg{display:grid;width:min(76%,560px);margin-bottom:15px}.msg.mine{justify-items:end;margin-left:auto}.msg.theirs{justify-items:start}.author{margin:0 8px 6px;color:#927d80;font-size:11px}.bubble{overflow:hidden;border:1px solid var(--line);border-radius:7px 20px 20px 20px;background:var(--paper);box-shadow:0 6px 16px rgba(74,51,52,.055)}.mine .bubble{color:#fffdfb;border-color:var(--rose);border-radius:20px 7px 20px 20px;background:var(--rose)}.bubble p{margin:0;padding:12px 16px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px}.bubble img{display:block;width:min(100%,430px);max-height:430px;object-fit:cover}.msg time{margin:5px 7px 0;color:#b19e9b;font-size:9px}
+    .composer{padding:15px;background:rgba(255,253,249,.94);border:1px solid var(--line);border-radius:22px;box-shadow:0 17px 42px rgba(85,59,61,.1)}.identity{display:flex;align-items:center;gap:8px;padding:0 4px 10px;color:#9a8587;font-size:11px}.identity input{width:88px;padding:3px 7px;border:1px solid #ecd8d9;border-radius:7px;background:#f8eeed;color:var(--rose-dark);font-weight:700}.identity span{margin-left:auto}.composer textarea{display:block;width:100%;resize:none;padding:8px 6px 14px;border:0;outline:0;background:transparent;line-height:1.7}.actions{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:11px;border-top:1px solid #eee3df}.tools{display:flex;gap:5px;min-width:0;overflow:auto}.tools button,.file-label{height:32px;padding:0 8px;border:0;border-radius:9px;background:#f6efeb;color:#826d70;font-size:11px;white-space:nowrap;display:grid;place-items:center}.send{height:38px;padding:0 15px;border:0;border-radius:15px;background:var(--rose);color:white;font-size:12px;font-weight:700}.status{margin:8px 4px 0;color:#b0495b;font-size:12px}.file-name{margin:0 4px 8px;color:#8e797d;font-size:11px}
+    @media(max-width:640px){.calc-shell{padding:18px}.calculator{padding:24px 20px 18px}.keys{gap:9px}.room{padding:25px 14px 36px}.msg{width:86%}.identity span{display:none}.tools button:nth-of-type(n+5){display:none}}
+  </style>
+</head>
+<body>
+  <main id="calc" class="calc-shell" aria-label="计算器">
+    <section class="calculator">
+      <header class="calc-head"><div><p class="brand">CALCULATOR</p><p class="model">CX-120</p></div><div class="solar"><i></i><i></i><i></i><i></i></div></header>
+      <div class="screen"><small id="formula">DEG</small><output id="display">0</output></div>
+      <div class="keys">
+        <button class="key fn" data-action="clear">AC</button><button class="key fn" data-action="sign">+/−</button><button class="key fn" data-action="percent">%</button><button class="key op" data-op="÷">÷</button>
+        <button class="key" data-digit="7">7</button><button class="key" data-digit="8">8</button><button class="key" data-digit="9">9</button><button class="key op" data-op="×">×</button>
+        <button class="key" data-digit="4">4</button><button class="key" data-digit="5">5</button><button class="key" data-digit="6">6</button><button class="key op" data-op="−">−</button>
+        <button class="key" data-digit="1">1</button><button class="key" data-digit="2">2</button><button class="key" data-digit="3">3</button><button class="key op" data-op="+">+</button>
+        <button class="key zero" data-digit="0">0</button><button class="key" data-action="decimal">.</button><button class="key op" data-action="equals">=</button>
+      </div>
+      <footer class="calc-foot"><span>AUTO POWER OFF</span><button data-action="back">DEL</button></footer>
+    </section>
+  </main>
+
+  <main id="room" class="room hidden">
+    <header class="room-head"><div><p class="eyebrow">OUR LITTLE CORNER</p><h1>两个人的悄悄话 ♡</h1></div><button id="lock" class="lock">锁门</button></header>
+    <section class="board"><div class="divider">我们的留言簿</div><div id="messages" class="messages"></div></section>
+    <form id="composer" class="composer">
+      <div class="identity"><label for="nickname">落款</label><input id="nickname" maxlength="12" value="我"/><span>只有你们两个人看得到</span></div>
+      <p id="fileName" class="file-name hidden"></p>
+      <textarea id="messageBody" maxlength="1200" rows="3" placeholder="把想说的话，留在这里……"></textarea>
+      <div class="actions"><div class="tools"><label class="file-label">＋ 图片<input id="image" type="file" accept="image/jpeg,image/png,image/gif,image/webp" hidden/></label><button type="button" data-emoji="🫶">🫶</button><button type="button" data-emoji="🥺">🥺</button><button type="button" data-emoji="🌙">🌙</button><button type="button" data-emoji="💌">💌</button><button type="button" data-emoji="想你">想你</button></div><button class="send" type="submit">寄给 TA ↗</button></div>
+      <p id="status" class="status"></p>
+    </form>
+  </main>
+
+  <script>
+    const API = "https://everyday-calculator-tool.aka-ak.chatgpt.site";
+    const SECRET_HASH = "48deb732e8de8fe7995bbc2816520798fcab815f62165af4d53bbc24434c963e";
+    const calc = document.querySelector("#calc"), room = document.querySelector("#room"), display = document.querySelector("#display"), formula = document.querySelector("#formula");
+    let shown="0", left=null, op=null, waiting=false, secret="", secretReady=true, token=null, poller=null, imageUrls=new Map();
+    const fmt=n=>Number.isFinite(n)?String(Number(n.toPrecision(12))).slice(0,14):"Error";
+    const compute=(a,b,o)=>o==="+"?a+b:o==="−"?a-b:o==="×"?a*b:b===0?NaN:a/b;
+    function paint(){display.textContent=shown;formula.textContent=op&&left!==null?`${fmt(left)} ${op}`:"DEG"}
+    function reset(){shown="0";left=null;op=null;waiting=false;secret="";secretReady=true;paint()}
+    async function digest(value){const bytes=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(value));return [...new Uint8Array(bytes)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+    async function clear(){if(secretReady&&await digest(secret)===SECRET_HASH){await unlock(secret);return}reset()}
+    function digit(d){shown=waiting||shown==="0"||shown==="Error"?d:shown.length<14?shown+d:shown;waiting=false;if(secretReady){secret+=d;if(secret.length>=4&&secret.length!==4)secretReady=false}paint()}
+    function decimal(){secretReady=false;secret="";if(waiting||shown==="Error"){shown="0.";waiting=false}else if(!shown.includes("."))shown+=".";paint()}
+    function choose(next){secretReady=false;secret="";const value=Number(shown);if(shown==="Error"){reset();return}if(left===null)left=value;else if(op&&!waiting){left=compute(left,value,op);shown=fmt(left)}op=next;waiting=true;paint()}
+    function equals(){secretReady=false;secret="";if(!op||left===null||waiting)return;shown=fmt(compute(left,Number(shown),op));left=null;op=null;waiting=true;paint()}
+    function sign(){secretReady=false;secret="";if(shown!=="0"&&shown!=="Error")shown=shown.startsWith("-")?shown.slice(1):"-"+shown;paint()}
+    function percent(){secretReady=false;secret="";shown=fmt(Number(shown)/100);paint()}
+    function back(){if(waiting||shown==="Error"){reset();return}shown=shown.length>1?shown.slice(0,-1):"0";if(secretReady)secret=secret.slice(0,-1);paint()}
+    document.querySelectorAll("[data-digit]").forEach(b=>b.onclick=()=>digit(b.dataset.digit));document.querySelectorAll("[data-op]").forEach(b=>b.onclick=()=>choose(b.dataset.op));
+    document.querySelector('[data-action="clear"]').onclick=clear;document.querySelector('[data-action="decimal"]').onclick=decimal;document.querySelector('[data-action="equals"]').onclick=equals;document.querySelector('[data-action="sign"]').onclick=sign;document.querySelector('[data-action="percent"]').onclick=percent;document.querySelector('[data-action="back"]').onclick=back;
+    window.addEventListener("keydown",e=>{if(!room.classList.contains("hidden"))return;if(/^\d$/.test(e.key))digit(e.key);else if(e.key==="Escape")clear();else if(e.key==="Enter"||e.key==="=")equals();else if(e.key==="Backspace")back();else if(e.key===".")decimal();else if(e.key==="+")choose("+");else if(e.key==="-")choose("−");else if(e.key==="*")choose("×");else if(e.key==="/")choose("÷");else return;e.preventDefault()});
+    async function unlock(pin){shown="....";paint();try{const r=await fetch(API+"/api/unlock",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pin})});const data=await r.json();if(!r.ok||!data.token)throw 0;token=data.token;secret="";calc.classList.add("hidden");room.classList.remove("hidden");await loadMessages();poller=setInterval(loadMessages,8000)}catch{shown="Error";paint();setTimeout(reset,900)}}
+    const nickname=document.querySelector("#nickname"), messageBody=document.querySelector("#messageBody"), image=document.querySelector("#image"), fileName=document.querySelector("#fileName"), status=document.querySelector("#status"), messages=document.querySelector("#messages");
+    nickname.value=localStorage.getItem("whisper-nickname")||"我";image.onchange=()=>{const f=image.files[0];fileName.textContent=f?f.name:"";fileName.classList.toggle("hidden",!f)};
+    document.querySelectorAll("[data-emoji]").forEach(b=>b.onclick=()=>messageBody.value+=b.dataset.emoji);
+    document.querySelector("#lock").onclick=()=>{token=null;clearInterval(poller);room.classList.add("hidden");calc.classList.remove("hidden");messages.textContent="";reset()};
+    function auth(){return {Authorization:`Bearer ${token}`}}
+    function time(value){const d=new Date(value.endsWith("Z")?value:value+"Z");return new Intl.DateTimeFormat("zh-CN",{hour:"2-digit",minute:"2-digit",hour12:false}).format(d)}
+    async function attachImage(img,key){try{if(!imageUrls.has(key)){const r=await fetch(API+"/api/media?key="+encodeURIComponent(key),{headers:auth()});if(!r.ok)return;imageUrls.set(key,URL.createObjectURL(await r.blob()))}img.src=imageUrls.get(key)}catch{}}
+    async function loadMessages(){if(!token)return;try{const r=await fetch(API+"/api/messages",{headers:auth(),cache:"no-store"});if(r.status===401){document.querySelector("#lock").click();return}const data=await r.json();messages.textContent="";if(!data.messages.length){const empty=document.createElement("div");empty.className="empty";empty.innerHTML="<b>这里还安安静静的</b><p>写下第一句，只让对方看到的话吧。</p>";messages.append(empty);return}data.messages.forEach(m=>{const article=document.createElement("article");article.className="msg "+(m.author===nickname.value.trim()?"mine":"theirs");const author=document.createElement("p");author.className="author";author.textContent=m.author;const bubble=document.createElement("div");bubble.className="bubble";if(m.imageKey){const img=document.createElement("img");img.alt="留言中的图片";bubble.append(img);attachImage(img,m.imageKey)}if(m.body){const p=document.createElement("p");p.textContent=m.body;bubble.append(p)}const t=document.createElement("time");t.textContent=time(m.createdAt);article.append(author,bubble,t);messages.append(article)});messages.scrollTop=messages.scrollHeight}catch{status.textContent="暂时无法读取留言"}}
+    document.querySelector("#composer").onsubmit=async e=>{e.preventDefault();const file=image.files[0],body=messageBody.value.trim(),name=nickname.value.trim().slice(0,12)||"我";if(!body&&!file)return;if(file&&file.size>8*1024*1024){status.textContent="图片请小于 8MB";return}localStorage.setItem("whisper-nickname",name);status.textContent="正在寄出…";const data=new FormData();data.set("author",name);data.set("body",body);if(file)data.set("image",file);try{const r=await fetch(API+"/api/messages",{method:"POST",headers:auth(),body:data});if(!r.ok)throw 0;messageBody.value="";image.value="";fileName.classList.add("hidden");status.textContent="";await loadMessages()}catch{status.textContent="没有寄出去，请再试一次"}};
+    reset();
+  </script>
+</body>
 </html>
