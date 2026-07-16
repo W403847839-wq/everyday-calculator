@@ -3,85 +3,122 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="A simple, reliable calculator for everyday use." />
+  <meta name="description" content="工资薪金个人所得税及税后收入估算工具。" />
   <meta name="robots" content="noindex,nofollow" />
-  <title>Calculator</title>
+  <title>个人所得税计算器｜工资税后收入估算</title>
   <style>
-    :root{--ink:#46383c;--muted:#907c80;--rose:#bb6d79;--rose-dark:#92505d;--paper:#fffdf9;--line:#eadfda}
-    *{box-sizing:border-box}html,body{min-height:100%;margin:0}body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#f7f1e9;color:var(--ink)}button,input,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
-    .calc-shell{min-height:100svh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% -10%,rgba(255,255,255,.08),transparent 38rem),linear-gradient(145deg,#1d2023,#0d0f11 62%,#191c1e)}
-    .calculator{width:min(100%,390px);padding:28px 25px 20px;color:#ecf0f2;background:linear-gradient(152deg,#33383c,#202427 55%,#171a1c);border:1px solid #464c50;border-radius:27px 27px 34px 34px;box-shadow:0 35px 80px rgba(0,0,0,.48),0 4px 0 #0c0e0f,inset 0 1px 0 rgba(255,255,255,.11)}
-    .calc-head{display:flex;align-items:center;justify-content:space-between;padding:0 4px 18px}.brand{margin:0 0 2px;font-size:10px;font-weight:700;letter-spacing:.22em}.model{margin:0;color:#929a9e;font-size:10px;letter-spacing:.16em}.solar{display:grid;grid-template-columns:repeat(4,1fr);width:104px;height:30px;padding:3px;gap:2px;background:#0a0d0e;border:1px solid #4b4b45;border-radius:5px}.solar i{background:linear-gradient(135deg,#342c25,#171a17);border-right:1px solid #65564a}
-    .screen{min-height:105px;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;margin-bottom:20px;padding:13px 16px 10px;color:#1c2c27;background:#aab8a7;border:7px solid #111517;border-radius:9px;box-shadow:inset 0 2px 10px rgba(30,44,36,.35)}.screen small{min-height:17px;font:10px ui-monospace,monospace;opacity:.68}.screen output{max-width:100%;overflow:hidden;font:clamp(36px,11vw,48px)/1 ui-monospace,monospace;letter-spacing:-.07em;white-space:nowrap}
-    .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.key{aspect-ratio:1.14/1;padding:0;color:#f1f3f4;background:linear-gradient(#4c5256,#34393c);border:1px solid #111416;border-radius:10px;font-size:20px;box-shadow:0 3px 0 #101214,inset 0 1px 0 rgba(255,255,255,.16)}.key:active{transform:translateY(2px);box-shadow:0 1px 0 #101214}.fn{color:#1e2528;background:linear-gradient(#d6d9da,#aab0b2);font-size:15px;font-weight:700}.op{background:linear-gradient(#e2a33a,#c47711);font-size:25px}.zero{grid-column:span 2;aspect-ratio:auto;text-align:left;padding-left:28px}.calc-foot{display:flex;justify-content:space-between;padding:17px 4px 0;color:#7f888c;font-size:8px;letter-spacing:.14em}.calc-foot button{border:0;background:none;color:#8d969a;font-size:8px}
-    .room{width:min(100%,980px);min-height:100svh;margin:auto;padding:38px 24px 52px;display:grid;grid-template-rows:auto minmax(360px,1fr) auto;background:radial-gradient(circle at 12% 18%,rgba(190,111,126,.08),transparent 29rem),#f7f1e9}.room-head{display:flex;align-items:center;justify-content:space-between;padding:0 6px 22px;border-bottom:1px solid var(--line)}.eyebrow{margin:0 0 7px;color:var(--rose);font-size:11px;font-weight:700;letter-spacing:.2em}.room h1{margin:0;font-family:serif;font-size:clamp(23px,4vw,31px)}.lock{padding:8px 13px;border:1px solid var(--line);border-radius:99px;background:var(--paper);color:#7c686c;font-size:12px}
-    .board{padding:25px 6px 14px;overflow:hidden}.divider{display:flex;align-items:center;gap:14px;margin-bottom:24px;color:#ab9997;font-size:11px}.divider:before,.divider:after{content:"";flex:1;height:1px;background:var(--line)}.messages{max-height:min(52svh,590px);overflow-y:auto;padding:0 8px 22px}.empty{min-height:300px;display:grid;place-content:center;text-align:center;color:var(--muted)}.empty b{font-family:serif;font-size:20px}.msg{display:grid;width:min(76%,560px);margin-bottom:15px}.msg.mine{justify-items:end;margin-left:auto}.msg.theirs{justify-items:start}.author{margin:0 8px 6px;color:#927d80;font-size:11px}.bubble{overflow:hidden;border:1px solid var(--line);border-radius:7px 20px 20px 20px;background:var(--paper);box-shadow:0 6px 16px rgba(74,51,52,.055)}.mine .bubble{color:#fffdfb;border-color:var(--rose);border-radius:20px 7px 20px 20px;background:var(--rose)}.bubble p{margin:0;padding:12px 16px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px}.bubble img{display:block;width:min(100%,430px);max-height:430px;object-fit:cover}.msg-meta{display:flex;align-items:center;gap:8px;margin:5px 7px 0;color:#b19e9b}.msg-meta time{font-size:9px}.delete-message{padding:0;border:0;background:transparent;color:#b19e9b;font-size:10px;cursor:pointer}.delete-message:hover{color:#b0495b}.delete-message:disabled{opacity:.45;cursor:wait}
-    .composer{padding:15px;background:rgba(255,253,249,.94);border:1px solid var(--line);border-radius:22px;box-shadow:0 17px 42px rgba(85,59,61,.1)}.identity{display:flex;align-items:center;gap:8px;padding:0 4px 10px;color:#9a8587;font-size:11px}.identity input{width:88px;padding:3px 7px;border:1px solid #ecd8d9;border-radius:7px;background:#f8eeed;color:var(--rose-dark);font-weight:700}.identity span{margin-left:auto}.composer textarea{display:block;width:100%;resize:none;padding:8px 6px 14px;border:0;outline:0;background:transparent;line-height:1.7}.actions{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:11px;border-top:1px solid #eee3df}.tools{display:flex;gap:5px;min-width:0;overflow:auto}.tools button,.file-label{height:32px;padding:0 8px;border:0;border-radius:9px;background:#f6efeb;color:#826d70;font-size:11px;white-space:nowrap;display:grid;place-items:center}.send{height:38px;padding:0 15px;border:0;border-radius:15px;background:var(--rose);color:white;font-size:12px;font-weight:700}.status{margin:8px 4px 0;color:#b0495b;font-size:12px}.file-name{margin:0 4px 8px;color:#8e797d;font-size:11px}
-    @media(max-width:640px){.calc-shell{padding:18px}.calculator{padding:24px 20px 18px}.keys{gap:9px}.room{padding:25px 14px 36px}.msg{width:86%}.identity span{display:none}.tools button:nth-of-type(n+5){display:none}}
+    :root{--blue:#1769d2;--blue-dark:#1055ad;--blue-soft:#edf5ff;--ink:#172033;--muted:#6e788b;--line:#dfe5ee;--bg:#f5f7fa;--paper:#fff;--rose:#bb6d79;--rose-dark:#92505d;--warm:#f7f1e9;--warm-line:#eadfda}
+    *{box-sizing:border-box}html,body{min-height:100%;margin:0}body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--bg)}button,input,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+
+    .tax-page{min-height:100svh;padding:0 20px 48px}.tax-wrap{width:min(100%,780px);margin:auto}.tax-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0;border-bottom:1px solid var(--line)}.brand-wrap{display:flex;align-items:center;gap:11px}.brand-trigger{width:38px;height:38px;display:grid;place-items:center;border:0;border-radius:9px;color:#fff;background:var(--blue);font-size:18px;font-weight:700;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}.brand-copy{display:grid;gap:2px}.brand-copy strong{font-size:16px}.brand-copy small{color:var(--muted);font-size:11px}.year-tag{padding:5px 9px;border-radius:99px;color:var(--blue-dark);background:var(--blue-soft);font-size:11px}
+    .tax-intro{padding:32px 0 23px}.tax-intro h1{margin:0 0 9px;font-size:28px}.tax-intro p{margin:0;color:var(--muted);font-size:14px;line-height:1.7}.tax-form{padding:25px;background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 28px rgba(36,55,80,.055)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:21px 24px}.field{display:grid;gap:8px}.field-label{font-size:13px;font-weight:600}.input-wrap{position:relative}.input-wrap input{width:100%;height:46px;padding:0 47px 0 13px;border:1px solid #ccd5e2;border-radius:8px;outline:0;color:var(--ink);background:#fff}.input-wrap input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(23,105,210,.12)}.unit{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:#8b95a5;font-size:12px}.hint{color:#8b95a5;font-size:11px;line-height:1.45}.tax-actions{display:flex;gap:10px;margin-top:24px}.primary,.secondary{height:42px;padding:0 20px;border-radius:8px;font-weight:600}.primary{border:1px solid var(--blue);color:#fff;background:var(--blue)}.primary:hover{background:var(--blue-dark)}.secondary{border:1px solid #cfd7e3;color:#445064;background:#fff}
+    .result{margin-top:22px;padding:24px;background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 28px rgba(36,55,80,.045)}.result-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}.result-head h2{margin:0;font-size:16px}.rate-tag{padding:5px 9px;border-radius:99px;color:var(--blue-dark);background:var(--blue-soft);font-size:11px}.main-results{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding-bottom:21px;border-bottom:1px solid var(--line)}.result-item{display:grid;gap:7px}.result-label{color:var(--muted);font-size:12px}.money{font-size:28px;letter-spacing:-.02em}.details{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding-top:20px}.details strong{font-size:14px}.notice{display:flex;gap:8px;margin:18px 3px 0;color:#7d8798;font-size:11px;line-height:1.65}.notice i{font-style:normal;color:var(--blue)}
+
+    .access-dialog{width:min(calc(100% - 36px),340px);padding:0;border:0;border-radius:16px;color:var(--ink);background:#fff;box-shadow:0 28px 90px rgba(14,28,48,.28)}.access-dialog::backdrop{background:rgba(16,27,43,.45);backdrop-filter:blur(2px)}.dialog-box{padding:25px}.dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.dialog-head h2{margin:0 0 6px;font-size:18px}.dialog-head p{margin:0;color:var(--muted);font-size:12px}.dialog-close{width:28px;height:28px;border:0;border-radius:50%;color:#6e788b;background:#f0f3f7}.pin-input{width:100%;height:52px;margin-top:20px;border:1px solid #ccd5e2;border-radius:9px;outline:0;text-align:center;font-size:25px;letter-spacing:.6em;text-indent:.6em}.pin-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(23,105,210,.12)}.access-status{min-height:18px;margin:9px 0 0;color:#b34c5b;text-align:center;font-size:12px}
+
+    .room{width:min(100%,980px);min-height:100svh;margin:auto;padding:38px 24px 52px;display:grid;grid-template-rows:auto minmax(360px,1fr) auto;background:radial-gradient(circle at 12% 18%,rgba(190,111,126,.08),transparent 29rem),var(--warm);color:#46383c}.room-head{display:flex;align-items:center;justify-content:space-between;padding:0 6px 22px;border-bottom:1px solid var(--warm-line)}.eyebrow{margin:0 0 7px;color:var(--rose);font-size:11px;font-weight:700;letter-spacing:.2em}.room h1{margin:0;font-family:serif;font-size:clamp(23px,4vw,31px)}.lock{padding:8px 13px;border:1px solid var(--warm-line);border-radius:99px;background:#fffdf9;color:#7c686c;font-size:12px}.board{padding:25px 6px 14px;overflow:hidden}.divider{display:flex;align-items:center;gap:14px;margin-bottom:24px;color:#ab9997;font-size:11px}.divider:before,.divider:after{content:"";flex:1;height:1px;background:var(--warm-line)}.messages{max-height:min(52svh,590px);overflow-y:auto;padding:0 8px 22px}.empty{min-height:300px;display:grid;place-content:center;text-align:center;color:#907c80}.empty b{font-family:serif;font-size:20px}.msg{display:grid;width:min(76%,560px);margin-bottom:15px}.msg.mine{justify-items:end;margin-left:auto}.msg.theirs{justify-items:start}.author{margin:0 8px 6px;color:#927d80;font-size:11px}.bubble{overflow:hidden;border:1px solid var(--warm-line);border-radius:7px 20px 20px 20px;background:#fffdf9;box-shadow:0 6px 16px rgba(74,51,52,.055)}.mine .bubble{color:#fffdfb;border-color:var(--rose);border-radius:20px 7px 20px 20px;background:var(--rose)}.bubble p{margin:0;padding:12px 16px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px}.bubble img{display:block;width:min(100%,430px);max-height:430px;object-fit:cover}.msg-meta{display:flex;align-items:center;gap:8px;margin:5px 7px 0;color:#b19e9b}.msg-meta time{font-size:9px}.delete-message{padding:0;border:0;background:transparent;color:#b19e9b;font-size:10px}.delete-message:hover{color:#b0495b}.delete-message:disabled{opacity:.45;cursor:wait}.composer{padding:15px;background:rgba(255,253,249,.94);border:1px solid var(--warm-line);border-radius:22px;box-shadow:0 17px 42px rgba(85,59,61,.1)}.identity{display:flex;align-items:center;gap:8px;padding:0 4px 10px;color:#9a8587;font-size:11px}.identity input{width:88px;padding:3px 7px;border:1px solid #ecd8d9;border-radius:7px;background:#f8eeed;color:var(--rose-dark);font-weight:700}.identity span{margin-left:auto}.composer textarea{display:block;width:100%;resize:none;padding:8px 6px 14px;border:0;outline:0;background:transparent;line-height:1.7}.actions{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:11px;border-top:1px solid #eee3df}.tools{display:flex;gap:5px;min-width:0;overflow:auto}.tools button,.file-label{height:32px;padding:0 8px;border:0;border-radius:9px;background:#f6efeb;color:#826d70;font-size:11px;white-space:nowrap;display:grid;place-items:center}.send{height:38px;padding:0 15px;border:0;border-radius:15px;background:var(--rose);color:white;font-size:12px;font-weight:700}.status{margin:8px 4px 0;color:#b0495b;font-size:12px}.file-name{margin:0 4px 8px;color:#8e797d;font-size:11px}
+
+    @media(max-width:640px){.tax-page{padding:0 14px 34px}.tax-head{padding:17px 0}.tax-intro{padding:25px 0 18px}.tax-intro h1{font-size:23px}.tax-form,.result{padding:18px}.form-grid,.main-results{grid-template-columns:1fr}.details{grid-template-columns:1fr 1fr}.tax-actions{display:grid;grid-template-columns:1fr 1fr}.primary,.secondary{padding:0 10px}.money{font-size:25px}.room{padding:25px 14px 36px}.msg{width:86%}.identity span{display:none}.tools button:nth-of-type(n+5){display:none}}
   </style>
 </head>
 <body>
-  <main id="calc" class="calc-shell" aria-label="计算器">
-    <section class="calculator">
-      <header class="calc-head"><div><p class="brand">CALCULATOR</p><p class="model">CX-120</p></div><div class="solar"><i></i><i></i><i></i><i></i></div></header>
-      <div class="screen"><small id="formula">DEG</small><output id="display">0</output></div>
-      <div class="keys">
-        <button class="key fn" data-action="clear">AC</button><button class="key fn" data-action="sign">+/−</button><button class="key fn" data-action="percent">%</button><button class="key op" data-op="÷">÷</button>
-        <button class="key" data-digit="7">7</button><button class="key" data-digit="8">8</button><button class="key" data-digit="9">9</button><button class="key op" data-op="×">×</button>
-        <button class="key" data-digit="4">4</button><button class="key" data-digit="5">5</button><button class="key" data-digit="6">6</button><button class="key op" data-op="−">−</button>
-        <button class="key" data-digit="1">1</button><button class="key" data-digit="2">2</button><button class="key" data-digit="3">3</button><button class="key op" data-op="+">+</button>
-        <button class="key zero" data-digit="0">0</button><button class="key" data-action="decimal">.</button><button class="key op" data-action="equals">=</button>
-      </div>
-      <footer class="calc-foot"><span>AUTO POWER OFF</span><button data-action="back">DEL</button></footer>
-    </section>
+  <main id="taxPage" class="tax-page">
+    <div class="tax-wrap">
+      <header class="tax-head">
+        <div class="brand-wrap">
+          <button id="brandTrigger" class="brand-trigger" type="button" aria-label="个税计算工具">税</button>
+          <span class="brand-copy"><strong>个人所得税计算器</strong><small>工资薪金 · 税后收入估算</small></span>
+        </div>
+        <span class="year-tag">2026年参考</span>
+      </header>
+
+      <section class="tax-intro">
+        <h1>工资薪金个税估算</h1>
+        <p>填写每月收入和扣除金额，快速估算个人所得税及税后收入。</p>
+      </section>
+
+      <form id="taxForm" class="tax-form">
+        <div class="form-grid">
+          <label class="field"><span class="field-label">税前月工资</span><span class="input-wrap"><input id="salary" type="number" min="0" step="100" value="15000" inputmode="decimal"><span class="unit">元</span></span></label>
+          <label class="field"><span class="field-label">每月五险一金</span><span class="input-wrap"><input id="insurance" type="number" min="0" step="100" value="1800" inputmode="decimal"><span class="unit">元</span></span></label>
+          <label class="field"><span class="field-label">每月专项附加扣除</span><span class="input-wrap"><input id="special" type="number" min="0" step="100" value="2000" inputmode="decimal"><span class="unit">元</span></span><span class="hint">如子女教育、住房租金、赡养老人等</span></label>
+          <label class="field"><span class="field-label">其他每月扣除</span><span class="input-wrap"><input id="other" type="number" min="0" step="100" value="0" inputmode="decimal"><span class="unit">元</span></span><span class="hint">没有可保持为0</span></label>
+        </div>
+        <div class="tax-actions"><button class="primary" type="submit">开始计算</button><button id="taxReset" class="secondary" type="button">清空重填</button></div>
+      </form>
+
+      <section class="result" aria-live="polite">
+        <div class="result-head"><h2>估算结果</h2><span id="rateTag" class="rate-tag">适用税率 10%</span></div>
+        <div class="main-results">
+          <div class="result-item"><span class="result-label">预计每月个人所得税</span><strong id="monthlyTax" class="money">¥410.00</strong></div>
+          <div class="result-item"><span class="result-label">预计税后月收入</span><strong id="monthlyNet" class="money">¥12,790.00</strong></div>
+        </div>
+        <div class="details">
+          <div class="result-item"><span class="result-label">年度预计个税</span><strong id="annualTax">¥4,920.00</strong></div>
+          <div class="result-item"><span class="result-label">年度税后收入</span><strong id="annualNet">¥153,480.00</strong></div>
+          <div class="result-item"><span class="result-label">年度应纳税所得额</span><strong id="taxableIncome">¥74,400.00</strong></div>
+        </div>
+      </section>
+      <p class="notice"><i>ⓘ</i><span>按固定月工资全年不变进行简化估算，结果仅供参考，实际金额以税务机关及扣缴单位计算为准。</span></p>
+    </div>
   </main>
 
+  <dialog id="accessDialog" class="access-dialog">
+    <div class="dialog-box">
+      <div class="dialog-head"><div><h2>请输入访问码</h2><p>验证通过后可进入管理页面</p></div><button id="dialogClose" class="dialog-close" type="button" aria-label="关闭">×</button></div>
+      <input id="pinInput" class="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="四位访问码">
+      <p id="accessStatus" class="access-status"></p>
+    </div>
+  </dialog>
+
   <main id="room" class="room hidden">
-    <header class="room-head"><div><p class="eyebrow">OUR LITTLE CORNER</p><h1>两个人的悄悄话 ♡</h1></div><button id="lock" class="lock">锁门</button></header>
+    <header class="room-head"><div><p class="eyebrow">OUR LITTLE CORNER</p><h1>两个人的悄悄话 ♡</h1></div><button id="lock" class="lock">退出</button></header>
     <section class="board"><div class="divider">我们的留言簿</div><div id="messages" class="messages"></div></section>
     <form id="composer" class="composer">
-      <div class="identity"><label for="nickname">落款</label><input id="nickname" maxlength="12" value="我"/><span>只有你们两个人看得到</span></div>
+      <div class="identity"><label for="nickname">落款</label><input id="nickname" maxlength="12" value="我"><span>只有你们两个人看得到</span></div>
       <p id="fileName" class="file-name hidden"></p>
       <textarea id="messageBody" maxlength="1200" rows="3" placeholder="把想说的话，留在这里……"></textarea>
-      <div class="actions"><div class="tools"><label class="file-label">＋ 图片<input id="image" type="file" accept="image/jpeg,image/png,image/gif,image/webp" hidden/></label><button type="button" data-emoji="🫶">🫶</button><button type="button" data-emoji="🥺">🥺</button><button type="button" data-emoji="🌙">🌙</button><button type="button" data-emoji="💌">💌</button><button type="button" data-emoji="想你">想你</button></div><button class="send" type="submit">寄给 TA ↗</button></div>
+      <div class="actions"><div class="tools"><label class="file-label">＋ 图片<input id="image" type="file" accept="image/jpeg,image/png,image/gif,image/webp" hidden></label><button type="button" data-emoji="🫶">🫶</button><button type="button" data-emoji="🥺">🥺</button><button type="button" data-emoji="🌙">🌙</button><button type="button" data-emoji="💌">💌</button><button type="button" data-emoji="想你">想你</button></div><button class="send" type="submit">寄给 TA ↗</button></div>
       <p id="status" class="status"></p>
     </form>
   </main>
 
   <script>
-    const API = "https://everyday-calculator-tool.aka-ak.chatgpt.site";
-    const SECRET_HASH = "48deb732e8de8fe7995bbc2816520798fcab815f62165af4d53bbc24434c963e";
-    const calc = document.querySelector("#calc"), room = document.querySelector("#room"), display = document.querySelector("#display"), formula = document.querySelector("#formula");
-    let shown="0", left=null, op=null, waiting=false, secret="", secretReady=true, token=null, poller=null, imageUrls=new Map();
-    const fmt=n=>Number.isFinite(n)?String(Number(n.toPrecision(12))).slice(0,14):"Error";
-    const compute=(a,b,o)=>o==="+"?a+b:o==="−"?a-b:o==="×"?a*b:b===0?NaN:a/b;
-    function paint(){display.textContent=shown;formula.textContent=op&&left!==null?`${fmt(left)} ${op}`:"DEG"}
-    function reset(){shown="0";left=null;op=null;waiting=false;secret="";secretReady=true;paint()}
-    async function digest(value){const bytes=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(value));return [...new Uint8Array(bytes)].map(x=>x.toString(16).padStart(2,"0")).join("")}
-    async function clear(){if(secretReady&&await digest(secret)===SECRET_HASH){await unlock(secret);return}reset()}
-    function digit(d){shown=waiting||shown==="0"||shown==="Error"?d:shown.length<14?shown+d:shown;waiting=false;if(secretReady){secret+=d;if(secret.length>=4&&secret.length!==4)secretReady=false}paint()}
-    function decimal(){secretReady=false;secret="";if(waiting||shown==="Error"){shown="0.";waiting=false}else if(!shown.includes("."))shown+=".";paint()}
-    function choose(next){secretReady=false;secret="";const value=Number(shown);if(shown==="Error"){reset();return}if(left===null)left=value;else if(op&&!waiting){left=compute(left,value,op);shown=fmt(left)}op=next;waiting=true;paint()}
-    function equals(){secretReady=false;secret="";if(!op||left===null||waiting)return;shown=fmt(compute(left,Number(shown),op));left=null;op=null;waiting=true;paint()}
-    function sign(){secretReady=false;secret="";if(shown!=="0"&&shown!=="Error")shown=shown.startsWith("-")?shown.slice(1):"-"+shown;paint()}
-    function percent(){secretReady=false;secret="";shown=fmt(Number(shown)/100);paint()}
-    function back(){if(waiting||shown==="Error"){reset();return}shown=shown.length>1?shown.slice(0,-1):"0";if(secretReady)secret=secret.slice(0,-1);paint()}
-    document.querySelectorAll("[data-digit]").forEach(b=>b.onclick=()=>digit(b.dataset.digit));document.querySelectorAll("[data-op]").forEach(b=>b.onclick=()=>choose(b.dataset.op));
-    document.querySelector('[data-action="clear"]').onclick=clear;document.querySelector('[data-action="decimal"]').onclick=decimal;document.querySelector('[data-action="equals"]').onclick=equals;document.querySelector('[data-action="sign"]').onclick=sign;document.querySelector('[data-action="percent"]').onclick=percent;document.querySelector('[data-action="back"]').onclick=back;
-    window.addEventListener("keydown",e=>{if(!room.classList.contains("hidden"))return;if(/^\d$/.test(e.key))digit(e.key);else if(e.key==="Escape")clear();else if(e.key==="Enter"||e.key==="=")equals();else if(e.key==="Backspace")back();else if(e.key===".")decimal();else if(e.key==="+")choose("+");else if(e.key==="-")choose("−");else if(e.key==="*")choose("×");else if(e.key==="/")choose("÷");else return;e.preventDefault()});
-    async function unlock(pin){shown="....";paint();try{const r=await fetch(API+"/api/unlock",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pin})});const data=await r.json();if(!r.ok||!data.token)throw 0;token=data.token;secret="";calc.classList.add("hidden");room.classList.remove("hidden");await loadMessages();poller=setInterval(loadMessages,8000)}catch{shown="Error";paint();setTimeout(reset,900)}}
-    const nickname=document.querySelector("#nickname"), messageBody=document.querySelector("#messageBody"), image=document.querySelector("#image"), fileName=document.querySelector("#fileName"), status=document.querySelector("#status"), messages=document.querySelector("#messages");
+    const API="https://everyday-calculator-tool.aka-ak.chatgpt.site";
+    const taxPage=document.querySelector("#taxPage"),room=document.querySelector("#room"),accessDialog=document.querySelector("#accessDialog"),pinInput=document.querySelector("#pinInput"),accessStatus=document.querySelector("#accessStatus");
+    let token=null,poller=null,holdTimer=null,imageUrls=new Map();
+
+    const salary=document.querySelector("#salary"),insurance=document.querySelector("#insurance"),special=document.querySelector("#special"),other=document.querySelector("#other");
+    const currency=new Intl.NumberFormat("zh-CN",{style:"currency",currency:"CNY",minimumFractionDigits:2});
+    function amount(input){return Math.max(0,Number(input.value)||0)}
+    function annualTaxFor(taxable){const rows=[[36000,.03,0],[144000,.10,2520],[300000,.20,16920],[420000,.25,31920],[660000,.30,52920],[960000,.35,85920],[Infinity,.45,181920]];const row=rows.find(item=>taxable<=item[0]);return{tax:Math.max(0,taxable*row[1]-row[2]),rate:row[1]}}
+    function calculateTax(){const monthlySalary=amount(salary),monthlyInsurance=amount(insurance),monthlySpecial=amount(special),monthlyOther=amount(other);const taxable=Math.max(0,(monthlySalary-5000-monthlyInsurance-monthlySpecial-monthlyOther)*12);const result=annualTaxFor(taxable);const monthlyTax=result.tax/12;const monthlyNet=Math.max(0,monthlySalary-monthlyInsurance-monthlyOther-monthlyTax);document.querySelector("#monthlyTax").textContent=currency.format(monthlyTax);document.querySelector("#monthlyNet").textContent=currency.format(monthlyNet);document.querySelector("#annualTax").textContent=currency.format(result.tax);document.querySelector("#annualNet").textContent=currency.format(monthlyNet*12);document.querySelector("#taxableIncome").textContent=currency.format(taxable);document.querySelector("#rateTag").textContent=taxable>0?`适用税率 ${Math.round(result.rate*100)}%`:"暂不缴税"}
+    document.querySelector("#taxForm").onsubmit=e=>{e.preventDefault();calculateTax()};
+    document.querySelector("#taxReset").onclick=()=>{[salary,insurance,special,other].forEach(input=>input.value="");calculateTax();salary.focus()};
+
+    const brandTrigger=document.querySelector("#brandTrigger");
+    function beginHold(){clearTimeout(holdTimer);holdTimer=setTimeout(openAccess,1600)}
+    function cancelHold(){clearTimeout(holdTimer);holdTimer=null}
+    function openAccess(){cancelHold();pinInput.value="";accessStatus.textContent="";accessDialog.showModal();setTimeout(()=>pinInput.focus(),50)}
+    brandTrigger.addEventListener("pointerdown",beginHold);["pointerup","pointercancel","pointerleave"].forEach(event=>brandTrigger.addEventListener(event,cancelHold));brandTrigger.addEventListener("contextmenu",e=>e.preventDefault());
+    brandTrigger.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&!e.repeat)beginHold()});brandTrigger.addEventListener("keyup",cancelHold);
+    document.querySelector("#dialogClose").onclick=()=>accessDialog.close();
+    accessDialog.addEventListener("click",e=>{if(e.target===accessDialog)accessDialog.close()});
+    pinInput.addEventListener("input",()=>{pinInput.value=pinInput.value.replace(/\D/g,"").slice(0,4);accessStatus.textContent="";if(pinInput.value.length===4)unlock(pinInput.value)});
+    async function unlock(pin){pinInput.disabled=true;accessStatus.textContent="正在验证…";let failed=false;try{const r=await fetch(API+"/api/unlock",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pin})});const data=await r.json();if(!r.ok||!data.token)throw 0;token=data.token;accessDialog.close();taxPage.classList.add("hidden");room.classList.remove("hidden");await loadMessages();clearInterval(poller);poller=setInterval(loadMessages,8000)}catch{failed=true;pinInput.value="";accessStatus.textContent="访问码不正确"}finally{pinInput.disabled=false;if(failed)pinInput.focus()}}
+
+    const nickname=document.querySelector("#nickname"),messageBody=document.querySelector("#messageBody"),image=document.querySelector("#image"),fileName=document.querySelector("#fileName"),status=document.querySelector("#status"),messages=document.querySelector("#messages");
     nickname.value=localStorage.getItem("whisper-nickname")||"我";image.onchange=()=>{const f=image.files[0];fileName.textContent=f?f.name:"";fileName.classList.toggle("hidden",!f)};
-    document.querySelectorAll("[data-emoji]").forEach(b=>b.onclick=()=>messageBody.value+=b.dataset.emoji);
-    document.querySelector("#lock").onclick=()=>{token=null;clearInterval(poller);room.classList.add("hidden");calc.classList.remove("hidden");messages.textContent="";reset()};
-    function auth(){return {Authorization:`Bearer ${token}`}}
-    function time(value){const d=new Date(value.endsWith("Z")?value:value+"Z");return new Intl.DateTimeFormat("zh-CN",{hour:"2-digit",minute:"2-digit",hour12:false}).format(d)}
+    document.querySelectorAll("[data-emoji]").forEach(button=>button.onclick=()=>messageBody.value+=button.dataset.emoji);
+    document.querySelector("#lock").onclick=()=>{token=null;clearInterval(poller);room.classList.add("hidden");taxPage.classList.remove("hidden");messages.textContent="";pinInput.value=""};
+    function auth(){return{Authorization:`Bearer ${token}`}}
+    function time(value){const date=new Date(value.endsWith("Z")?value:value+"Z");return new Intl.DateTimeFormat("zh-CN",{hour:"2-digit",minute:"2-digit",hour12:false}).format(date)}
     async function attachImage(img,key){try{if(!imageUrls.has(key)){const r=await fetch(API+"/api/media?key="+encodeURIComponent(key),{headers:auth()});if(!r.ok)return;imageUrls.set(key,URL.createObjectURL(await r.blob()))}img.src=imageUrls.get(key)}catch{}}
     async function removeMessage(id,button){if(!confirm("确定删除这条留言吗？"))return;button.disabled=true;status.textContent="正在删除…";try{const r=await fetch(API+"/api/messages?id="+encodeURIComponent(id),{method:"DELETE",headers:auth()});if(!r.ok)throw 0;status.textContent="";await loadMessages()}catch{button.disabled=false;status.textContent="没有删除成功，请再试一次"}}
-    async function loadMessages(){if(!token)return;try{const r=await fetch(API+"/api/messages",{headers:auth(),cache:"no-store"});if(r.status===401){document.querySelector("#lock").click();return}const data=await r.json();messages.textContent="";if(!data.messages.length){const empty=document.createElement("div");empty.className="empty";empty.innerHTML="<b>这里还安安静静的</b><p>写下第一句，只让对方看到的话吧。</p>";messages.append(empty);return}data.messages.forEach(m=>{const article=document.createElement("article");article.className="msg "+(m.author===nickname.value.trim()?"mine":"theirs");const author=document.createElement("p");author.className="author";author.textContent=m.author;const bubble=document.createElement("div");bubble.className="bubble";if(m.imageKey){const img=document.createElement("img");img.alt="留言中的图片";bubble.append(img);attachImage(img,m.imageKey)}if(m.body){const p=document.createElement("p");p.textContent=m.body;bubble.append(p)}const meta=document.createElement("div");meta.className="msg-meta";const t=document.createElement("time");t.textContent=time(m.createdAt);const del=document.createElement("button");del.type="button";del.className="delete-message";del.textContent="删除";del.setAttribute("aria-label","删除这条留言");del.onclick=()=>removeMessage(m.id,del);meta.append(t,del);article.append(author,bubble,meta);messages.append(article)});messages.scrollTop=messages.scrollHeight}catch{status.textContent="暂时无法读取留言"}}
+    async function loadMessages(){if(!token)return;try{const r=await fetch(API+"/api/messages",{headers:auth(),cache:"no-store"});if(r.status===401){document.querySelector("#lock").click();return}const data=await r.json();messages.textContent="";if(!data.messages.length){const empty=document.createElement("div");empty.className="empty";empty.innerHTML="<b>这里还安安静静的</b><p>写下第一句，只让对方看到的话吧。</p>";messages.append(empty);return}data.messages.forEach(message=>{const article=document.createElement("article");article.className="msg "+(message.author===nickname.value.trim()?"mine":"theirs");const author=document.createElement("p");author.className="author";author.textContent=message.author;const bubble=document.createElement("div");bubble.className="bubble";if(message.imageKey){const img=document.createElement("img");img.alt="留言中的图片";bubble.append(img);attachImage(img,message.imageKey)}if(message.body){const p=document.createElement("p");p.textContent=message.body;bubble.append(p)}const meta=document.createElement("div");meta.className="msg-meta";const stamp=document.createElement("time");stamp.textContent=time(message.createdAt);const del=document.createElement("button");del.type="button";del.className="delete-message";del.textContent="删除";del.setAttribute("aria-label","删除这条留言");del.onclick=()=>removeMessage(message.id,del);meta.append(stamp,del);article.append(author,bubble,meta);messages.append(article)});messages.scrollTop=messages.scrollHeight}catch{status.textContent="暂时无法读取留言"}}
     function fileBase64(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(",")[1]||"");reader.onerror=reject;reader.readAsDataURL(file)})}
     document.querySelector("#composer").onsubmit=async e=>{e.preventDefault();const file=image.files[0],body=messageBody.value.trim(),name=nickname.value.trim().slice(0,12)||"我";if(!body&&!file)return;if(file&&file.size>8*1024*1024){status.textContent="图片请小于 8MB";return}localStorage.setItem("whisper-nickname",name);status.textContent="正在寄出…";try{const payload={author:name,body};if(file){payload.imageType=file.type;payload.imageData=await fileBase64(file)}const r=await fetch(API+"/api/messages",{method:"POST",headers:{...auth(),"Content-Type":"application/json"},body:JSON.stringify(payload)});if(!r.ok)throw 0;messageBody.value="";image.value="";fileName.classList.add("hidden");status.textContent="";await loadMessages()}catch{status.textContent="没有寄出去，请再试一次"}};
-    reset();
+    calculateTax();
   </script>
 </body>
 </html>
