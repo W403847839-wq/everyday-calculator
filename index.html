@@ -39,10 +39,10 @@
 
       <form id="taxForm" class="tax-form">
         <div class="form-grid">
-          <label class="field"><span class="field-label">税前月工资</span><span class="input-wrap"><input id="salary" type="number" min="0" step="100" value="15000" inputmode="decimal"><span class="unit">元</span></span></label>
-          <label class="field"><span class="field-label">每月五险一金</span><span class="input-wrap"><input id="insurance" type="number" min="0" step="100" value="1800" inputmode="decimal"><span class="unit">元</span></span></label>
-          <label class="field"><span class="field-label">每月专项附加扣除</span><span class="input-wrap"><input id="special" type="number" min="0" step="100" value="2000" inputmode="decimal"><span class="unit">元</span></span><span class="hint">如子女教育、住房租金、赡养老人等</span></label>
-          <label class="field"><span class="field-label">其他每月扣除</span><span class="input-wrap"><input id="other" type="number" min="0" step="100" value="0" inputmode="decimal"><span class="unit">元</span></span><span class="hint">没有可保持为0</span></label>
+          <label class="field"><span class="field-label">税前月工资</span><span class="input-wrap"><input id="salary" type="number" min="0" step="any" value="15000" inputmode="decimal"><span class="unit">元</span></span></label>
+          <label class="field"><span class="field-label">每月五险一金</span><span class="input-wrap"><input id="insurance" type="number" min="0" step="any" value="1800" inputmode="decimal"><span class="unit">元</span></span></label>
+          <label class="field"><span class="field-label">每月专项附加扣除</span><span class="input-wrap"><input id="special" type="number" min="0" step="any" value="2000" inputmode="decimal"><span class="unit">元</span></span><span class="hint">如子女教育、住房租金、赡养老人等</span></label>
+          <label class="field"><span class="field-label">其他每月扣除</span><span class="input-wrap"><input id="other" type="number" min="0" step="any" value="0" inputmode="decimal"><span class="unit">元</span></span><span class="hint">没有可保持为0</span></label>
         </div>
         <div class="tax-actions"><button class="primary" type="submit">开始计算</button><button id="taxReset" class="secondary" type="button">清空重填</button></div>
       </form>
