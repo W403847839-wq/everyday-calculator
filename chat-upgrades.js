@@ -106,8 +106,26 @@
   unlock = async pin => { await originalUnlock(pin); if (token && currentMember && owner !== currentMember.id) await restore(currentMember.id); };
   const originalClearImage = clearPendingImage;
   clearPendingImage = () => { originalClearImage(); persist(); };
-  const originalReply = beginReply;
-  beginReply = message => { originalReply(message); persist(); };
+  beginReply = message => {
+    replyingTo = { id: message.id, author: message.author, preview: (message.body || "[图片]").slice(0, 120) };
+    replyPreviewText.textContent = `正在回复 ${replyingTo.author}：${replyingTo.preview}`;
+    replyPreview.classList.remove("hidden");
+    messageBody.focus({ preventScroll: true });
+    keepComposerVisible();
+    persist();
+  };
+  let quoteHighlightTimer;
+  function revealOriginal(id) {
+    const target = [...messages.querySelectorAll("[data-message-id]")].find(node => node.dataset.messageId === id);
+    if (!target) { status.textContent = "原消息已删除或不在当前记录中"; return; }
+    followLatest = false; scrollInteraction++; cancelAnimationFrame(scrollFrame);
+    messages.querySelectorAll(".quote-highlight").forEach(node => node.classList.remove("quote-highlight"));
+    messages.scrollTop += target.getBoundingClientRect().top - messages.getBoundingClientRect().top - 36;
+    target.classList.add("quote-highlight");
+    clearTimeout(quoteHighlightTimer);
+    quoteHighlightTimer = setTimeout(() => target.classList.remove("quote-highlight"), 2200);
+    updateUnread();
+  }
   const originalImageChange = image.onchange;
   image.onchange = event => { originalImageChange(event); persist(); };
   const originalCancelReply = document.querySelector("#cancelReply").onclick;
@@ -175,7 +193,13 @@
     article.dataset.messageId = message.id || `${owner}-${message.clientId}`;
     const author = document.createElement("p"); author.className = "author"; author.textContent = message.author || currentMember?.name;
     const bubble = document.createElement("div"); bubble.className = "bubble";
-    if (message.replyTo) { const quote = document.createElement("div"); quote.className = "reply-quote"; quote.textContent = `回复 ${message.replyTo.author}：${message.replyTo.preview}`; bubble.append(quote); }
+    if (message.replyTo) {
+      const quote = document.createElement("button"); quote.type = "button"; quote.className = "reply-quote";
+      quote.setAttribute("aria-label", `查看 ${message.replyTo.author} 的原消息`);
+      const name = document.createElement("strong"); name.textContent = `回复 ${message.replyTo.author}`;
+      const preview = document.createElement("span"); preview.textContent = message.replyTo.preview || "[图片]";
+      quote.append(name, preview); quote.onclick = () => revealOriginal(message.replyTo.id); bubble.append(quote);
+    }
     if (message.imageKey || message.file) {
       const img = document.createElement("img"); img.alt = "留言中的图片"; img.setAttribute("role", "button"); img.tabIndex = 0; img.setAttribute("aria-label", "放大预览图片");
       bubble.style.width = "100%"; img.style.width = "100%"; img.style.aspectRatio = "4 / 3"; img.style.objectFit = "contain";
@@ -186,7 +210,7 @@
     const stamp = document.createElement("time"); stamp.textContent = time(message.createdAt); meta.append(stamp);
     if (!local) {
       if (message.author === currentMember?.name) { const sent = document.createElement("span"); sent.className = "delivery-state"; sent.textContent = "已发送"; meta.append(sent); }
-      const reply = document.createElement("button"); reply.type = "button"; reply.className = "reply-message"; reply.textContent = "回复"; reply.onclick = () => beginReply(message);
+      const reply = document.createElement("button"); reply.type = "button"; reply.className = "reply-message"; reply.textContent = "引用回复"; reply.setAttribute("aria-label", `引用回复${message.author}的消息`); reply.onclick = () => beginReply(message);
       const del = document.createElement("button"); del.type = "button"; del.className = "delete-message"; del.textContent = "删除"; del.onclick = () => removeMessage(message.id, del); meta.append(reply, del);
     } else {
       const state = document.createElement("span"); state.className = "local-state" + (message.status === "failed" ? " failed" : "");
