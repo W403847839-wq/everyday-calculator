@@ -32,6 +32,34 @@
   const uuid = () => crypto.randomUUID ? crypto.randomUUID() : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => { const n = crypto.getRandomValues(new Uint8Array(1))[0] & 15; return (c === "x" ? n : (n & 3) | 8).toString(16); });
   const atBottom = () => messages.scrollHeight - messages.scrollTop - messages.clientHeight < 85;
   const memberStill = id => token && currentMember?.id === id;
+  let clearingBadge = false;
+  function viewingLatest() {
+    return token && !document.hidden && shield.hidden && !room.classList.contains("hidden") &&
+      !document.querySelector("#messagePanel").classList.contains("hidden") && (followLatest || atBottom());
+  }
+  async function clearReadBadge() {
+    if (!viewingLatest() || clearingBadge) return;
+    clearingBadge = true;
+    try {
+      if (typeof navigator.clearAppBadge === "function") await navigator.clearAppBadge().catch(() => {});
+      else if (typeof navigator.setAppBadge === "function") await navigator.setAppBadge(0).catch(() => {});
+      if (navigator.serviceWorker) {
+        const registration = serviceWorkerRegistration || await navigator.serviceWorker.getRegistration("./");
+        const worker = registration?.active || navigator.serviceWorker.controller;
+        worker?.postMessage({ type: "CHAT_MESSAGES_READ" });
+        const notifications = await registration?.getNotifications?.().catch(() => []) || [];
+        notifications.filter(item => ["calculator-update", "notification-check"].includes(item.tag)).forEach(item => item.close());
+      }
+    } catch { /* Unsupported badge APIs must not interrupt the chat. */ }
+    finally { clearingBadge = false; }
+  }
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.addEventListener("controllerchange", clearReadBadge);
+    navigator.serviceWorker.addEventListener("message", event => { if (event.data?.type === "CHAT_PUSH_RECEIVED" && token) loadMessages(); });
+    navigator.serviceWorker.getRegistration("./").then(registration => registration?.update()).catch(() => {});
+  }
+  const originalJump = jumpLatest.onclick;
+  jumpLatest.onclick = () => { originalJump(); clearReadBadge(); };
 
   function database() {
     return dbPromise ||= new Promise((resolve, reject) => {
@@ -207,10 +235,11 @@
       const changed = JSON.stringify(next) !== JSON.stringify(remote) || removed.length || firstLoad;
       remote = next; if (changed) renderRemote(pinned); else if (forceBottom && pinned) scrollMessagesToBottom();
       firstLoad = false; updateUnread(); connectionState("ok", "连接正常"); persist();
+      if (pinned) clearReadBadge();
     } catch (error) { if (memberStill(id)) failure(error); }
     finally { pollRunning = false; }
   };
-  messages.addEventListener("scroll", () => { if (atBottom()) { sessionUnreadCount = 0; unreadStartId = null; } updateUnread(); });
+  messages.addEventListener("scroll", () => { if (atBottom()) { sessionUnreadCount = 0; unreadStartId = null; clearReadBadge(); } updateUnread(); });
   keepComposerVisible = () => {
     const viewport = window.visualViewport, height = viewport?.height || window.innerHeight, focused = composer.contains(document.activeElement);
     if (!focused) stableViewportHeight = Math.max(stableViewportHeight, height);
