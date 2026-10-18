@@ -193,7 +193,7 @@
   }
   function updateUnread() { messageTabCount.textContent = String(sessionUnreadCount); messageTabCount.classList.toggle("hidden", !sessionUnreadCount); jumpLatest.textContent = sessionUnreadCount ? `↓ ${sessionUnreadCount} 条新消息 · 回到最新` : "↓ 回到最新消息"; jumpLatest.classList.toggle("hidden", atBottom()); }
   loadMessages = async (forceBottom = false) => {
-    if (!token || pollRunning) return;
+    if (!token || pollRunning || document.hidden || !shield.hidden) return;
     pollRunning = true; const id = currentMember.id, sessionToken = token, interaction = scrollInteraction;
     try {
       const result = await api("/api/messages", undefined, sessionToken); if (!memberStill(id) || sessionToken !== token) return;
@@ -211,8 +211,19 @@
     finally { pollRunning = false; }
   };
   messages.addEventListener("scroll", () => { if (atBottom()) { sessionUnreadCount = 0; unreadStartId = null; } updateUnread(); });
-  const originalKeyboard = keepComposerVisible;
-  keepComposerVisible = () => { const previous = messages.scrollTop, following = followLatest; originalKeyboard(); if (!following) messages.scrollTop = previous; };
+  keepComposerVisible = () => {
+    const viewport = window.visualViewport, height = viewport?.height || window.innerHeight, focused = composer.contains(document.activeElement);
+    if (!focused) stableViewportHeight = Math.max(stableViewportHeight, height);
+    const space = Math.max(0, stableViewportHeight - height), open = focused && space > 70;
+    document.documentElement.style.setProperty("--visible-height", `${height}px`);
+    document.documentElement.style.setProperty("--keyboard-space", `${space}px`);
+    document.body.classList.toggle("keyboard-open", open);
+    if (open) requestAnimationFrame(() => {
+      const bottom = (viewport?.offsetTop || 0) + height - 10, bounds = composer.getBoundingClientRect();
+      if (bounds.bottom > bottom) window.scrollBy({ top: bounds.bottom - bottom, behavior: "auto" });
+      if (followLatest) scrollMessagesToBottom();
+    });
+  };
   time = value => new Intl.DateTimeFormat("zh-CN", { month: "2-digit", day: "2-digit", weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(value));
 
   async function preparePhoto(file) {
