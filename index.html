@@ -90,7 +90,7 @@
   </dialog>
 
   <main id="room" class="room hidden">
-    <header class="room-head" style="justify-content:flex-end"><div class="room-head-actions"><button id="badgeToggle" class="badge-toggle" type="button">开启消息提醒</button><button id="lock" class="lock" type="button">退出</button></div></header>
+    <header class="room-head"><div class="room-title"><span class="room-mark" aria-hidden="true">聊</span><h1>留言簿</h1></div><div class="room-head-actions"><button id="badgeToggle" class="badge-toggle" type="button">开启消息提醒</button><button id="lock" class="lock" type="button">退出</button></div></header>
     <p id="notificationStatus" class="notification-status" aria-live="polite"></p>
     <div id="presenceStrip" class="presence-strip"></div>
     <nav class="room-tabs" aria-label="留言簿功能"><button class="room-tab active" type="button" data-panel="messagePanel">留言簿 <span id="messageTabCount" class="message-tab-count hidden">0</span></button><button class="room-tab" type="button" data-panel="historyPanel">上线记录</button></nav>
@@ -233,6 +233,7 @@
     registerServiceWorker();
     calculateTax();
   </script>
-  <script src="./chat-upgrades.js?v=20261018-3"></script>
+  <script src="./chat-upgrades.js?v=20261018-4"></script>
+  <link rel="stylesheet" href="./chat-theme.css?v=20261018-4">
 </body>
 </html>
