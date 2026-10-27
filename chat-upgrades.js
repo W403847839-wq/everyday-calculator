@@ -223,25 +223,42 @@
     return article;
   }
   function renderOutbox() {
-    const pinned = followLatest && atBottom();
-    messages.querySelectorAll(".local-message").forEach(node => node.remove());
+    const pinned = followLatest && atBottom(), saved = anchor();
+    const old = new Map([...messages.querySelectorAll(".local-message")].map(node => [node.dataset.clientId, node]));
     if (outbox.length) messages.querySelector(".empty")?.remove();
-    outbox.forEach(item => messages.append(buildMessage(item, true)));
-    if (pinned) scrollMessagesToBottom();
+    for (const item of outbox) {
+      const signature = JSON.stringify([item.status, item.progress, item.error, item.body, item.replyTo, !!item.file]);
+      let node = old.get(item.clientId);
+      old.delete(item.clientId);
+      if (!node || node.dataset.signature !== signature) {
+        const replacement = buildMessage(item, true); replacement.dataset.clientId = item.clientId; replacement.dataset.signature = signature;
+        if (node) node.replaceWith(replacement); else messages.append(replacement);
+        node = replacement;
+      }
+    }
+    old.forEach(node => node.remove());
+    if (pinned) scrollMessagesToBottom(); else restoreAnchor(saved);
   }
   function anchor() { const top = messages.getBoundingClientRect().top, node = [...messages.querySelectorAll("[data-message-id]")].find(n => n.getBoundingClientRect().bottom > top); return { id: node?.dataset.messageId, offset: node ? node.getBoundingClientRect().top - top : 0, top: messages.scrollTop }; }
+  function restoreAnchor(saved) { const node = [...messages.querySelectorAll("[data-message-id]")].find(n => n.dataset.messageId === saved.id); const nextTop = node ? messages.scrollTop + node.getBoundingClientRect().top - messages.getBoundingClientRect().top - saved.offset : saved.top; if (Math.abs(messages.scrollTop - nextTop) > 1) messages.scrollTop = nextTop; }
   function renderRemote(pinned) {
-    const saved = anchor(), old = new Map([...messages.querySelectorAll(".msg:not(.local-message)")].map(n => [n.dataset.messageId, n])), fragment = document.createDocumentFragment();
+    const saved = anchor(), old = new Map([...messages.querySelectorAll(".msg:not(.local-message)")].map(n => [n.dataset.messageId, n])), desired = [];
     for (const message of remote) {
-      if (!pinned && unreadStartId === message.id && sessionUnreadCount) { const divider = document.createElement("div"); divider.className = "new-divider"; divider.textContent = "以下是新消息"; fragment.append(divider); }
+      if (!pinned && unreadStartId === message.id && sessionUnreadCount) { const divider = messages.querySelector(".new-divider") || document.createElement("div"); divider.className = "new-divider"; divider.textContent = "以下是新消息"; desired.push(divider); }
       const signature = JSON.stringify(message); let node = old.get(message.id);
       if (!node || node.dataset.signature !== signature) { node = buildMessage(message); node.dataset.signature = signature; }
-      fragment.append(node);
+      desired.push(node);
     }
-    messages.replaceChildren(fragment);
+    const keep = new Set(desired);
+    for (const child of [...messages.children]) if (!child.classList.contains("local-message") && !keep.has(child)) child.remove();
+    let cursor = messages.firstChild;
+    for (const node of desired) {
+      if (node !== cursor) messages.insertBefore(node, cursor);
+      cursor = node.nextSibling;
+    }
     if (!remote.length && !outbox.length) { const empty = document.createElement("div"); empty.className = "empty"; empty.textContent = "还没有消息，写下第一句吧"; messages.append(empty); }
     renderOutbox();
-    if (pinned) scrollMessagesToBottom(); else { const node = [...messages.querySelectorAll("[data-message-id]")].find(n => n.dataset.messageId === saved.id); messages.scrollTop = node ? messages.scrollTop + node.getBoundingClientRect().top - messages.getBoundingClientRect().top - saved.offset : saved.top; }
+    if (pinned) scrollMessagesToBottom(); else restoreAnchor(saved);
   }
   function updateUnread() { messageTabCount.textContent = String(sessionUnreadCount); messageTabCount.classList.toggle("hidden", !sessionUnreadCount); jumpLatest.textContent = sessionUnreadCount ? `↓ ${sessionUnreadCount} 条新消息 · 回到最新` : "↓ 回到最新消息"; jumpLatest.classList.toggle("hidden", atBottom()); }
   loadMessages = async (forceBottom = false) => {
