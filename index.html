@@ -189,7 +189,7 @@
     photoStage.addEventListener("pointerup",endPhotoGesture);photoStage.addEventListener("pointercancel",endPhotoGesture);photoStage.addEventListener("lostpointercapture",endPhotoGesture);window.addEventListener("resize",()=>{if(photoViewer.open)paintPhoto()});
     messages.addEventListener("click",event=>{const img=event.target.closest(".bubble img");if(img)openPhoto(img)});messages.addEventListener("keydown",event=>{if((event.key==="Enter"||event.key===" ")&&event.target.matches(".bubble img")){event.preventDefault();openPhoto(event.target)}});
     let followLatest=true,messageLoading=false,messageRenderKey="",scrollFrame=0,scrollInteraction=0;
-    function scrollMessagesToBottom(){followLatest=true;cancelAnimationFrame(scrollFrame);scrollFrame=requestAnimationFrame(()=>{if(followLatest)messages.scrollTop=messages.scrollHeight})}
+    function scrollMessagesToBottom(){followLatest=true;cancelAnimationFrame(scrollFrame);messages.scrollTop=messages.scrollHeight;const interaction=scrollInteraction;scrollFrame=requestAnimationFrame(()=>{if(followLatest&&interaction===scrollInteraction)messages.scrollTop=messages.scrollHeight})}
     ["touchstart","wheel","pointerdown"].forEach(event=>messages.addEventListener(event,()=>{followLatest=false;scrollInteraction++;cancelAnimationFrame(scrollFrame)},{passive:true}));
     jumpLatest.onclick=()=>{scrollMessagesToBottom(true);jumpLatest.classList.add("hidden")};
     messages.addEventListener("scroll",()=>{const atBottom=messages.scrollHeight-messages.scrollTop-messages.clientHeight<80;followLatest=atBottom;jumpLatest.classList.toggle("hidden",atBottom);if(atBottom&&sessionUnreadCount){sessionUnreadCount=0;unreadStartId=null;messageTabCount.classList.add("hidden")}});
@@ -233,7 +233,7 @@
     registerServiceWorker();
     calculateTax();
   </script>
-  <script src="./chat-upgrades.js?v=20261018-4"></script>
+  <script src="./chat-upgrades.js?v=20261027-1"></script>
   <link rel="stylesheet" href="./chat-theme.css?v=20261018-4">
 </body>
 </html>
