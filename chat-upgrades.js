@@ -144,8 +144,13 @@
   }
   document.querySelector("#lock").onclick = returnToCalculator; quick.onclick = returnToCalculator;
   shield.querySelector("[data-calculator]").onclick = returnToCalculator;
-  shield.querySelector("[data-resume]").onclick = () => { shield.hidden = true; loadMessages(); };
-  function cover() { if (token) { persist(); if (photoViewer.open) photoViewer.close(); shield.hidden = false; } }
+  const originalHeartbeat = sendHeartbeat;
+  sendHeartbeat = () => { if (!document.hidden && shield.hidden) return originalHeartbeat(); };
+  function markChatAway() {
+    if (token) fetch(API + "/api/presence", { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify({ chatActive: false }), keepalive: true }).catch(() => {});
+  }
+  shield.querySelector("[data-resume]").onclick = () => { shield.hidden = true; sendHeartbeat(); loadMessages(); };
+  function cover() { if (token) { markChatAway(); persist(); if (photoViewer.open) photoViewer.close(); if (currentMember?.id === "mei") { returnToCalculator(); } else shield.hidden = false; } }
   document.addEventListener("visibilitychange", () => { if (document.hidden) cover(); else if (token) loadMessages(); });
   window.addEventListener("pagehide", cover);
 
