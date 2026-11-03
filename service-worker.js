@@ -1,8 +1,44 @@
 const APP_URL = "/everyday-calculator/?v=cloudbase";
 const APP_ICON = "/everyday-calculator/app-icon-192.png";
 
-self.addEventListener("install", () => self.skipWaiting());
-self.addEventListener("activate", (event) => event.waitUntil(self.clients.claim()));
+const SHELL_CACHE = "calculator-shell-20261103-1";
+const SHELL_ROOT = "/everyday-calculator/";
+const SHELL_FILES = [APP_URL, SHELL_ROOT + "chat-upgrades.js?v=20261103-1", SHELL_ROOT + "chat-theme.css?v=20261018-4"];
+self.addEventListener("install", event => event.waitUntil((async () => {
+  try { const cache = await caches.open(SHELL_CACHE); await cache.addAll(SHELL_FILES); } catch {}
+  await self.skipWaiting();
+})()));
+self.addEventListener("activate", event => event.waitUntil((async () => {
+  for (const key of await caches.keys()) if (key.startsWith("calculator-shell-") && key !== SHELL_CACHE) await caches.delete(key);
+  await self.clients.claim();
+})()));
+
+// Only the public calculator shell is cached. API responses, messages and photos
+// must never enter the shared offline cache.
+self.addEventListener("fetch", event => {
+  const request = event.request, url = new URL(request.url);
+  if (request.method !== "GET" || url.origin !== self.location.origin) return;
+  const navigation = request.mode === "navigate" && [SHELL_ROOT, SHELL_ROOT + "index.html"].includes(url.pathname);
+  const asset = ["chat-upgrades.js", "chat-theme.css"].some(name => url.pathname === SHELL_ROOT + name);
+  if (!navigation && !asset) return;
+  const network = (async () => {
+    const response = await fetch(request);
+    if (response.ok && response.type !== "opaque") { const cache = await caches.open(SHELL_CACHE); await cache.put(navigation ? APP_URL : request, response.clone()); }
+    return response;
+  })();
+  event.waitUntil(network.catch(() => {}));
+  event.respondWith((async () => {
+    const cache = await caches.open(SHELL_CACHE);
+    const cached = await cache.match(navigation ? APP_URL : request);
+    if (!navigation && cached) return cached;
+    if (!cached) return network;
+    let timer;
+    try {
+      const response = await Promise.race([network.catch(() => null), new Promise(resolve => { timer = setTimeout(() => resolve(null), 1500); })]);
+      return response?.ok ? response : cached;
+    } finally { clearTimeout(timer); }
+  })());
+});
 
 let badgeWork = Promise.resolve();
 function enqueueBadge(work) {
