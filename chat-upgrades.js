@@ -150,7 +150,12 @@
     if (token) fetch(API + "/api/presence", { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify({ chatActive: false }), keepalive: true }).catch(() => {});
   }
   shield.querySelector("[data-resume]").onclick = () => { shield.hidden = true; sendHeartbeat(); loadMessages(); };
-  function cover() { if (token) { markChatAway(); persist(); if (photoViewer.open) photoViewer.close(); if (currentMember?.id === "mei") { returnToCalculator(); } else shield.hidden = false; } }
+  function cover() {
+    // The native app owns its chat lifecycle. Its login handoff hides/reloads
+    // this WebView; logging out here would erase the freshly saved native token.
+    if (window.AndroidApp) return;
+    if (token) { markChatAway(); persist(); if (photoViewer.open) photoViewer.close(); if (currentMember?.id === "mei") { returnToCalculator(); } else shield.hidden = false; }
+  }
   document.addEventListener("visibilitychange", () => { if (document.hidden) cover(); else if (token) loadMessages(); });
   window.addEventListener("pagehide", cover);
 
